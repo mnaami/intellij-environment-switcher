@@ -20,7 +20,7 @@ From a release zip: *Settings | Plugins | ⚙ | Install Plugin from Disk…*.
 Build it yourself:
 
 ```bash
-./gradlew buildPlugin        # build/distributions/env-switcher-<version>.zip
+./gradlew buildPlugin        # build/distributions/environment-switcher-<version>.zip
 ```
 
 ## Use
