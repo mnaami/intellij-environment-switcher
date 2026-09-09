@@ -43,7 +43,7 @@ class EnvironmentComboBoxAction :
                 selected,
                 EnvSwitcherBundle.message("toolbar.noEnvironments"),
                 EnvSwitcherBundle.message("toolbar.select"),
-            ) { if (prefs.showPrefix) EnvSwitcherBundle.message("toolbar.selected", it) else it }
+            ) { if (prefs.showPrefix && prefs.prefix.isNotBlank()) "${prefs.prefix.trim()} $it" else it }
         presentation.icon = if (prefs.showColorDot) environments.firstOrNull { it.name == selected }?.let { dot(it.color) } else null
         presentation.description = EnvSwitcherBundle.message("toolbar.description")
     }

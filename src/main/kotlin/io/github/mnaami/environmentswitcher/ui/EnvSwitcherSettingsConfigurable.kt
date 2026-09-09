@@ -5,12 +5,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.MutableProperty
 import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.columns
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.selected
 import com.intellij.util.ui.JBUI
 import io.github.mnaami.environmentswitcher.EnvSwitcherBundle
 import io.github.mnaami.environmentswitcher.model.ConfirmScope
 import io.github.mnaami.environmentswitcher.model.MissingSecretPolicy
 import io.github.mnaami.environmentswitcher.model.SecretStorage
+import io.github.mnaami.environmentswitcher.state.DEFAULT_PREFIX
 import io.github.mnaami.environmentswitcher.state.EnvironmentsService
 import io.github.mnaami.environmentswitcher.state.ToolbarSettings
 import javax.swing.JComponent
@@ -80,9 +84,16 @@ class EnvSwitcherSettingsConfigurable(
                 }
             }
             group(EnvSwitcherBundle.message("settings.group.toolbar")) {
+                lateinit var prefixEnabled: com.intellij.ui.dsl.builder.Cell<javax.swing.JCheckBox>
                 row {
-                    checkBox(EnvSwitcherBundle.message("settings.toolbar.prefix"))
-                        .bindSelected({ toolbar.showPrefix }, { toolbar.showPrefix = it })
+                    prefixEnabled =
+                        checkBox(EnvSwitcherBundle.message("settings.toolbar.prefix"))
+                            .bindSelected({ toolbar.showPrefix }, { toolbar.showPrefix = it })
+                    textField()
+                        .bindText({ toolbar.prefix }, { toolbar.prefix = it })
+                        .columns(12)
+                        .enabledIf(prefixEnabled.selected)
+                        .comment(EnvSwitcherBundle.message("settings.toolbar.prefix.comment", DEFAULT_PREFIX))
                 }
                 row {
                     checkBox(EnvSwitcherBundle.message("settings.toolbar.dot"))

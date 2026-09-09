@@ -6,9 +6,14 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 
+const val DEFAULT_PREFIX = "Env:"
+
 class ToolbarSettingsState {
-    /** Show "Env: dev" instead of just "dev" on the toolbar button. */
+    /** Show a prefix before the environment name on the toolbar button, e.g. "Env: dev". */
     var showPrefix: Boolean = true
+
+    /** The prefix text itself; trailing space is added automatically. */
+    var prefix: String = DEFAULT_PREFIX
 
     /** Show the environment colour dot next to the label. */
     var showColorDot: Boolean = true

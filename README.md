@@ -51,7 +51,7 @@ policies are stored in the shared project file; toolbar preferences are yours.
 | Expand `${NAME}` references in values (chained references work, unknown ones stay literal) | off |
 | Secret storage: IDE password safe, or plain text in the project file | password safe |
 | Automatically mark new `*PASSWORD*`, `*SECRET*`, `*TOKEN*`, `*KEY*` variables as secret | on |
-| Toolbar: show "Env:" prefix, show colour dot | on, on |
+| Toolbar: show a prefix before the name (text configurable, default "Env:"), show colour dot | on, on |
 
 ### Import a folder of `.env` files
 
