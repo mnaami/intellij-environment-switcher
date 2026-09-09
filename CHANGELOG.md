@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-09-10
+## [1.0.0] - 2026-09-10
 ### Added
 - Toolbar dropdown next to the run widget to select the active environment
   (new and classic UI), with a configurable "Env:" prefix and colour dot.

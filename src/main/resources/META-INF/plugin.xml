@@ -12,7 +12,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
-    <b>0.1.0</b> Initial release.
+    <b>1.0.0</b> Initial release.
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
