@@ -9,9 +9,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializerUtil
 import io.github.mnaami.environmentswitcher.model.EnvironmentsState
 
-/** Project-level, shared with the team through `.idea/envSwitcher.xml`. */
+/** Project-level, shared with the team through `.idea/environmentSwitcher.xml`. */
 @Service(Service.Level.PROJECT)
-@State(name = "EnvSwitcher", storages = [Storage("envSwitcher.xml")])
+@State(name = "EnvironmentSwitcher", storages = [Storage("environmentSwitcher.xml")])
 class EnvironmentsService : PersistentStateComponent<EnvironmentsState> {
     private var state = EnvironmentsState()
 

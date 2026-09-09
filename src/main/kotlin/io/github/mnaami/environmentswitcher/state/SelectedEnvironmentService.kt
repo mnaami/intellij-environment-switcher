@@ -20,7 +20,7 @@ fun interface SelectionListener {
 
 /** Per-developer choice, stored in the workspace file so it is never shared. */
 @Service(Service.Level.PROJECT)
-@State(name = "EnvSwitcherSelection", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
+@State(name = "EnvironmentSwitcherSelection", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
 class SelectedEnvironmentService(
     private val project: Project,
 ) : PersistentStateComponent<SelectionState> {

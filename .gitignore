@@ -4,5 +4,5 @@ build/
 .kotlin/
 *.iml
 .idea/
-!.idea/envSwitcher.xml
+!.idea/environmentSwitcher.xml
 out/

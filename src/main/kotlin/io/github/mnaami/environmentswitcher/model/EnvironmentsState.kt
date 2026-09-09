@@ -23,7 +23,7 @@ class ModuleOverride() {
     override fun hashCode(): Int = moduleName.hashCode()
 }
 
-/** Everything shared through the project file (.idea/envSwitcher.xml). Never holds secret values. */
+/** Everything shared through the project file (.idea/environmentSwitcher.xml). Never holds secret values. */
 class EnvironmentsState {
     var version: Int = 1
 

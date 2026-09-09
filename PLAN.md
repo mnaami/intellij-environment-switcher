@@ -18,8 +18,8 @@ state, then UI, then import, then phase-out.
   dependency; `envswitcher-springboot.xml` optional descriptor reserved for
   future Spring-specific extras. Fallback if patcher runs too early:
   `RunConfigurationExtension.updateJavaParameters`.
-- State: `EnvironmentsService` project-level, `@State(name="EnvSwitcher",
-  storages=[Storage("envSwitcher.xml")])` → `.idea/envSwitcher.xml`.
+- State: `EnvironmentsService` project-level, `@State(name="EnvironmentSwitcher",
+  storages=[Storage("environmentSwitcher.xml")])` → `.idea/environmentSwitcher.xml`.
   Selected env: `SelectedEnvironmentService` with `StoragePathMacros.WORKSPACE_FILE`.
 - Secrets: `PasswordSafe.instance` with `CredentialAttributes(generateServiceName("Env Switcher", "$projectHash/$env/$key"))`.
 - Toolbar: `ComboBoxAction`; register in `RunToolbarMainActionGroup` (new UI) and
@@ -31,7 +31,7 @@ state, then UI, then import, then phase-out.
 - Packaging: id `io.github.mnaami.environmentswitcher`, MIT LICENSE, CHANGELOG,
   GitHub Actions build.yml (build + verifyPlugin), `signPlugin`/`publishPlugin`
   configured from env vars, never run by Claude.
-- Umbrella-repo `.gitignore`: `.idea` → `.idea/*` + `!.idea/envSwitcher.xml`
+- Umbrella-repo `.gitignore`: `.idea` → `.idea/*` + `!.idea/environmentSwitcher.xml`
   (ask-first, approved by spec). Plugin folder has its own `.gitignore`.
 - Genericity guard: `NoVendorStringsTest` fails the build on "snapsim|ooredoo" under `src/main`.
 - Tests: JUnit 5 for pure code; `BasePlatformTestCase` (JUnit 4 style) for platform bits.
@@ -108,7 +108,7 @@ Parallel: T6 with T3-T5; T7 after T2 (uses T3 for secrets, T6 for import button)
 
 ### Phase 4: Ship
 - [x] **T8 Packaging + docs** (M)
-  - `buildPlugin`; `verifyPlugin` on IC+IU 2024.2 + latest; README (install, usage, folder import convention, screenshots), LICENSE MIT, CHANGELOG, `.github/workflows/build.yml`; umbrella `.gitignore` exception for `.idea/envSwitcher.xml`.
+  - `buildPlugin`; `verifyPlugin` on IC+IU 2024.2 + latest; README (install, usage, folder import convention, screenshots), LICENSE MIT, CHANGELOG, `.github/workflows/build.yml`; umbrella `.gitignore` exception for `.idea/environmentSwitcher.xml`.
   - Accept: zip installs from disk on a second IDE (Community too); envs appear; `grep -riE "snapsim|ooredoo" src/` empty; folder builds when copied alone.
   - Deps: T5, T7.
 - [ ] **T9 Phase-out file-based setup** (M) — after user confirms T8

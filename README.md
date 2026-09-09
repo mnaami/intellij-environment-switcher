@@ -10,7 +10,7 @@ safe (your OS keychain), never in project files.
 - Works in IntelliJ IDEA 2024.2+, Community and Ultimate.
 - Applies to Java-based run configurations: Application, JAR Application and
   Spring Boot by default; enable any other type in settings.
-- Team-shareable: environments are stored in `.idea/envSwitcher.xml`; the
+- Team-shareable: environments are stored in `.idea/environmentSwitcher.xml`; the
   selected environment and all secret values stay on your machine.
 
 ## Install
@@ -55,12 +55,12 @@ dialog; nothing is saved until you press OK or Apply.
 
 ### Sharing with a team
 
-Commit `.idea/envSwitcher.xml`. If your repository ignores `.idea` as a whole,
+Commit `.idea/environmentSwitcher.xml`. If your repository ignores `.idea` as a whole,
 switch to an explicit rule:
 
 ```gitignore
 .idea/*
-!.idea/envSwitcher.xml
+!.idea/environmentSwitcher.xml
 ```
 
 Each developer enters secret values once per environment; the file only lists
@@ -86,7 +86,7 @@ download the IntelliJ Platform.
 - Missing secret shows a balloon and the variable is absent.
 - "Ask for confirmation" environment prompts once per IDE session.
 - Settings: add/rename/delete env, secret masking, cancel discards, import folder.
-- `.idea/envSwitcher.xml` contains secret key names only.
+- `.idea/environmentSwitcher.xml` contains secret key names only.
 
 ## License
 

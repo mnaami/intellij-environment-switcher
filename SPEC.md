@@ -91,7 +91,7 @@ intellij-env-switcher/
       Environment.kt                → name, variables: Map<String,String>, secretKeys: Set<String>
       EnvironmentsState.kt          → environments, commonVariables, serviceOverrides, version
     state/
-      EnvironmentsService.kt        → project-level PersistentStateComponent, @State(storages=[Storage("envSwitcher.xml")]) -> .idea/envSwitcher.xml (project-shared; SnapSIM repo adds a .gitignore exception)
+      EnvironmentsService.kt        → project-level PersistentStateComponent, @State(storages=[Storage("environmentSwitcher.xml")]) -> .idea/environmentSwitcher.xml (project-shared; SnapSIM repo adds a .gitignore exception)
       SelectedEnvironmentService.kt → project-level, workspace file (not shared): selected env name
       SecretStore.kt                → PasswordSafe wrapper: get/set/delete(env, key)
     resolve/
@@ -224,7 +224,7 @@ class VariableResolver(
    and the staging datasource password from PasswordSafe; selecting `dev`
    then running again flips all of them without touching the run config.
 3. Running a non-Spring-Boot configuration (a JUnit test) is unaffected.
-4. `.idea/envSwitcher.xml` contains no value for any key marked secret;
+4. `.idea/environmentSwitcher.xml` contains no value for any key marked secret;
    `grep -i password` on it returns key names only.
 5. `./gradlew build verifyPlugin` passes for IntelliJ IDEA Community and
    Ultimate, 2024.2 and the latest 2025.x; the plugin loads in Community
@@ -250,9 +250,9 @@ class VariableResolver(
    "Run Environments", "EnvBoard", "Env Profiles".
 
 1. Resolved (user, 2026-09-09): shared state file is
-   `.idea/envSwitcher.xml`. The repo ignores `.idea` as a whole, and
+   `.idea/environmentSwitcher.xml`. The repo ignores `.idea` as a whole, and
    git cannot re-include a file under an ignored directory, so `.gitignore`
-   changes from `.idea` to `.idea/*` plus `!.idea/envSwitcher.xml`.
+   changes from `.idea` to `.idea/*` plus `!.idea/environmentSwitcher.xml`.
    This is part of the plan (ask-first item: `.gitignore` edit).
 2. Per-environment secret entry: one masked field per key in the table, or a
    single "Enter secrets for <env>" dialog? Default: inline in the table.
