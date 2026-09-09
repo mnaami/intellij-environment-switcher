@@ -1,0 +1,45 @@
+<idea-plugin>
+    <id>io.github.mnaami.environmentswitcher</id>
+    <name>Environment Switcher</name>
+    <vendor email="m.naami@outlook.com" url="https://github.com/mnaami">Mohammed Nami</vendor>
+
+    <description><![CDATA[
+    Postman-style environments for your run configurations.<br/>
+    Define named environments (dev, test, staging, prod, ...) with their variables once,
+    pick one from a dropdown next to the run configuration selector, and every run
+    configuration you launch gets those variables. Secrets are stored in the IDE's
+    password safe, never in project files.
+    ]]></description>
+
+    <change-notes><![CDATA[
+    <b>0.1.0</b> Initial release.
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends optional="true" config-file="envswitcher-springboot.xml">com.intellij.spring.boot</depends>
+
+    <resource-bundle>messages.EnvSwitcherBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <java.programPatcher implementation="io.github.mnaami.environmentswitcher.inject.EnvProgramPatcher"/>
+        <notificationGroup id="Environment Switcher" displayType="BALLOON"/>
+        <projectConfigurable parentId="tools" id="io.github.mnaami.environmentswitcher.settings"
+                             instance="io.github.mnaami.environmentswitcher.ui.EnvironmentsConfigurable"
+                             key="settings.title" bundle="messages.EnvSwitcherBundle" nonDefaultProject="true"/>
+    </extensions>
+
+    <actions>
+        <action id="EnvSwitcher.EditEnvironments" class="io.github.mnaami.environmentswitcher.ui.EditEnvironmentsAction"
+                text="Edit Environments…" description="Manage environments applied to run configurations">
+            <add-to-group group-id="RunMenu" anchor="after" relative-to-action="editRunConfigurations"/>
+        </action>
+        <action id="EnvSwitcher.Toolbar" class="io.github.mnaami.environmentswitcher.ui.EnvironmentComboBoxAction"
+                text="Environment" description="Environment applied to run configurations">
+            <!-- new UI: left of the run widget -->
+            <add-to-group group-id="MainToolbarRight" anchor="before" relative-to-action="NewUiRunWidget"/>
+            <!-- classic UI: left of the run configuration combo -->
+            <add-to-group group-id="ToolbarRunGroup" anchor="before" relative-to-action="RunConfiguration"/>
+        </action>
+    </actions>
+</idea-plugin>

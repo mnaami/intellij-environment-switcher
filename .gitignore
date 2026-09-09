@@ -1,0 +1,8 @@
+.gradle/
+build/
+.intellijPlatform/
+.kotlin/
+*.iml
+.idea/
+!.idea/envSwitcher.xml
+out/

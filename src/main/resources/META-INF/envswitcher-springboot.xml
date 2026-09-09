@@ -1,0 +1,3 @@
+<idea-plugin>
+    <!-- Loaded only when the Spring Boot plugin is present. Reserved for Spring-specific extras. -->
+</idea-plugin>
