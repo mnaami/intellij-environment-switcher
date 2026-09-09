@@ -16,6 +16,7 @@ import io.github.mnaami.environmentswitcher.EnvSwitcherBundle
 import io.github.mnaami.environmentswitcher.model.Environment
 import io.github.mnaami.environmentswitcher.state.EnvironmentsService
 import io.github.mnaami.environmentswitcher.state.SelectedEnvironmentService
+import io.github.mnaami.environmentswitcher.state.ToolbarSettings
 import javax.swing.Icon
 import javax.swing.JComponent
 
@@ -34,6 +35,7 @@ class EnvironmentComboBoxAction :
         }
         val environments = EnvironmentsService.getInstance(project).state.environments
         val selected = SelectedEnvironmentService.getInstance(project).environmentName
+        val prefs = ToolbarSettings.getInstance().state
         presentation.isEnabledAndVisible = true
         presentation.text =
             EnvironmentMenuModel.buttonText(
@@ -41,8 +43,8 @@ class EnvironmentComboBoxAction :
                 selected,
                 EnvSwitcherBundle.message("toolbar.noEnvironments"),
                 EnvSwitcherBundle.message("toolbar.select"),
-            )
-        presentation.icon = environments.firstOrNull { it.name == selected }?.let { dot(it.color) }
+            ) { if (prefs.showPrefix) EnvSwitcherBundle.message("toolbar.selected", it) else it }
+        presentation.icon = if (prefs.showColorDot) environments.firstOrNull { it.name == selected }?.let { dot(it.color) } else null
         presentation.description = EnvSwitcherBundle.message("toolbar.description")
     }
 

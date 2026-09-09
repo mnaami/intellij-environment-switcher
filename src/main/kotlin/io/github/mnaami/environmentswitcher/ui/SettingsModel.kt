@@ -35,14 +35,12 @@ data class SettingsModel(
     val common: MutableList<VariableRow> = ArrayList(),
     val environments: MutableList<EnvironmentDraft> = ArrayList(),
     val overrides: MutableList<OverrideDraft> = ArrayList(),
-    val targetConfigTypeIds: MutableSet<String> = LinkedHashSet(),
 ) {
     fun deepCopy(): SettingsModel =
         SettingsModel(
             common.map { it.copy() }.toMutableList(),
             environments.map { e -> e.copy(rows = e.rows.map { it.copy() }.toMutableList()) }.toMutableList(),
             overrides.map { o -> o.copy(rows = o.rows.map { it.copy() }.toMutableList()) }.toMutableList(),
-            LinkedHashSet(targetConfigTypeIds),
         )
 
     /** Problems that block Apply. */
@@ -81,7 +79,6 @@ data class SettingsModel(
     ) {
         state.commonVariables = plainMap(common)
         state.overrides = overrides.map { ModuleOverride(it.moduleName.trim(), plainMap(it.rows)) }.toMutableList()
-        state.targetConfigTypeIds = targetConfigTypeIds.toMutableList()
 
         val previousSecretKeys = state.environments.associate { it.name to it.secretKeys.toSet() }
         state.environments =
@@ -146,7 +143,6 @@ data class SettingsModel(
             }
             model.overrides +=
                 state.overrides.map { o -> OverrideDraft(o.moduleName, o.variables.map { (k, v) -> VariableRow(k, v) }.toMutableList()) }
-            model.targetConfigTypeIds += state.targetConfigTypeIds
             return model
         }
 

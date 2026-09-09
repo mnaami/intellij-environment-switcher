@@ -25,7 +25,7 @@
         <java.programPatcher implementation="io.github.mnaami.environmentswitcher.inject.EnvProgramPatcher"/>
         <notificationGroup id="Environment Switcher" displayType="BALLOON"/>
         <projectConfigurable parentId="tools" id="io.github.mnaami.environmentswitcher.settings"
-                             instance="io.github.mnaami.environmentswitcher.ui.EnvironmentsConfigurable"
+                             instance="io.github.mnaami.environmentswitcher.ui.EnvSwitcherSettingsConfigurable"
                              key="settings.title" bundle="messages.EnvSwitcherBundle" nonDefaultProject="true"/>
     </extensions>
 

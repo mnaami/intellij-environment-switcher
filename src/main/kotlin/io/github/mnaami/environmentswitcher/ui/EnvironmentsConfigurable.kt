@@ -1,19 +1,19 @@
 package io.github.mnaami.environmentswitcher.ui
 
-import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.Messages
-import com.intellij.ui.CheckBoxList
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.OnePixelSplitter
@@ -30,6 +30,8 @@ import com.intellij.util.ui.UIUtil
 import io.github.mnaami.environmentswitcher.EnvSwitcherBundle
 import io.github.mnaami.environmentswitcher.importer.EnvFolderImporter
 import io.github.mnaami.environmentswitcher.model.Environment
+import io.github.mnaami.environmentswitcher.model.SENSITIVE_NAME
+import io.github.mnaami.environmentswitcher.model.SecretStorage
 import io.github.mnaami.environmentswitcher.state.EnvironmentsService
 import io.github.mnaami.environmentswitcher.state.PasswordSafeSecretStore
 import io.github.mnaami.environmentswitcher.state.SelectedEnvironmentService
@@ -45,7 +47,7 @@ import javax.swing.ScrollPaneConstants
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-/** Settings | Tools | Environment Switcher. */
+/** Editor panel behind Run | Edit Environments… (hosted by [EditEnvironmentsDialog]). */
 class EnvironmentsConfigurable(
     private val project: Project,
 ) : SearchableConfigurable {
@@ -58,7 +60,6 @@ class EnvironmentsConfigurable(
     private val environmentsTab = EnvironmentsTab()
     private val commonTable = VariablesTablePanel(allowSecrets = false)
     private val overridesTab = OverridesTab()
-    private val targetsTab = TargetsTab()
     private var root: JComponent? = null
 
     override fun getId(): String = ID
@@ -70,7 +71,6 @@ class EnvironmentsConfigurable(
         tabs.addTab(EnvSwitcherBundle.message("settings.tab.environments"), padded(environmentsTab.component))
         tabs.addTab(EnvSwitcherBundle.message("settings.tab.common"), padded(commonTable.component))
         tabs.addTab(EnvSwitcherBundle.message("settings.tab.overrides"), padded(overridesTab.component))
-        tabs.addTab(EnvSwitcherBundle.message("settings.tab.targets"), padded(targetsTab.component))
 
         val importButton = JButton(EnvSwitcherBundle.message("settings.import")).apply { addActionListener { importFolder() } }
         val top =
@@ -95,7 +95,7 @@ class EnvironmentsConfigurable(
         val problems = model.validate()
         if (problems.isNotEmpty()) throw ConfigurationException(problems.joinToString("\n"))
         val previousSelection = SelectedEnvironmentService.getInstance(project).environmentName
-        service.update { model.applyTo(this, secrets) }
+        offEdt(EnvSwitcherBundle.message("progress.savingSecrets")) { service.update { model.applyTo(this, secrets) } }
         if (previousSelection != null && service.state.environment(previousSelection) == null) {
             SelectedEnvironmentService.getInstance(project).environmentName = null
         }
@@ -103,16 +103,32 @@ class EnvironmentsConfigurable(
     }
 
     override fun reset() {
-        model = SettingsModel.from(service.state, secrets)
+        environmentsTab.configureSecrets(
+            enabled = service.state.secretStorage == SecretStorage.PASSWORD_SAFE,
+            autoMark = { name -> service.state.autoMarkSecrets && SENSITIVE_NAME.containsMatchIn(name) },
+        )
+        model = offEdt(EnvSwitcherBundle.message("progress.loadingSecrets")) { SettingsModel.from(service.state, secrets) }
         snapshot = model.deepCopy()
         environmentsTab.bind(model)
         commonTable.bind(model.common)
         overridesTab.bind(model)
-        targetsTab.bind(model)
     }
 
     override fun disposeUIResources() {
         root = null
+    }
+
+    /**
+     * Password-safe access is a slow operation and must not run on the UI thread.
+     * Runs [block] on a pooled thread behind a modal progress and returns its result.
+     */
+    private fun <T> offEdt(
+        title: String,
+        block: () -> T,
+    ): T {
+        val app = ApplicationManager.getApplication()
+        if (!app.isDispatchThread || app.isUnitTestMode) return block()
+        return ProgressManager.getInstance().runProcessWithProgressSynchronously<T, RuntimeException>(block, title, false, project)
     }
 
     private fun stopEditing() {
@@ -204,7 +220,7 @@ class EnvironmentsConfigurable(
                             override fun actionPerformed(e: AnActionEvent) {
                                 val source = list.selectedValue ?: return
                                 stopEditing()
-                                val copy = duplicate(source)
+                                val copy = offEdt(EnvSwitcherBundle.message("progress.loadingSecrets")) { duplicate(source) }
                                 val index = list.selectedIndex + 1
                                 model.environments.add(index, copy)
                                 listModel.add(index, copy)
@@ -267,6 +283,14 @@ class EnvironmentsConfigurable(
         fun stopEditing() = table.stopEditing()
 
         fun isEditing(): Boolean = table.isEditing
+
+        fun configureSecrets(
+            enabled: Boolean,
+            autoMark: (String) -> Boolean,
+        ) {
+            table.allowSecrets = enabled
+            table.autoMarkSecret = autoMark
+        }
 
         private fun show(draft: EnvironmentDraft?) {
             stopEditing()
@@ -409,37 +433,6 @@ class EnvironmentsConfigurable(
         fun stopEditing() = table.stopEditing()
 
         fun isEditing(): Boolean = table.isEditing
-    }
-
-    private inner class TargetsTab {
-        private val checkList = CheckBoxList<String>()
-        val component: JComponent =
-            JPanel(BorderLayout(0, JBUI.scale(6))).apply {
-                add(JBLabel(EnvSwitcherBundle.message("settings.targets.hint")), BorderLayout.NORTH)
-                add(
-                    com.intellij.ui.ScrollPaneFactory
-                        .createScrollPane(checkList),
-                    BorderLayout.CENTER,
-                )
-            }
-
-        init {
-            checkList.setCheckBoxListListener { index, checked ->
-                val id = checkList.getItemAt(index) ?: return@setCheckBoxListListener
-                if (checked) model.targetConfigTypeIds += id else model.targetConfigTypeIds -= id
-            }
-        }
-
-        fun bind(model: SettingsModel) {
-            checkList.clear()
-            val known = ConfigurationType.CONFIGURATION_TYPE_EP.extensionList.associateBy { it.id }
-            val ids = (known.keys + model.targetConfigTypeIds).distinct().sortedBy { known[it]?.displayName ?: it }
-            for (id in ids) {
-                val label =
-                    known[id]?.let { "${it.displayName}  ($id)" } ?: "$id  (${EnvSwitcherBundle.message("settings.targets.unknown")})"
-                checkList.addItem(id, label, id in model.targetConfigTypeIds)
-            }
-        }
     }
 
     companion object {

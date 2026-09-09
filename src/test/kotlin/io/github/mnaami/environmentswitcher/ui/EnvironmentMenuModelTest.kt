@@ -26,6 +26,6 @@ class EnvironmentMenuModelTest {
         assertEquals("none", EnvironmentMenuModel.buttonText(emptyList(), "dev", "none", "pick"))
         assertEquals("pick", EnvironmentMenuModel.buttonText(envs, null, "none", "pick"))
         assertEquals("pick", EnvironmentMenuModel.buttonText(envs, "deleted", "none", "pick"))
-        assertEquals("dev", EnvironmentMenuModel.buttonText(envs, "dev", "none", "pick"))
+        assertEquals("Env: dev", EnvironmentMenuModel.buttonText(envs, "dev", "none", "pick"))
     }
 }

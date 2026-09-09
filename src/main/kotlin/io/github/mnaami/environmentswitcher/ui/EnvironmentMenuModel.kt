@@ -24,16 +24,17 @@ object EnvironmentMenuModel {
         return if (envs.isEmpty()) listOf(Item.Edit) else envs + Item.Separator + Item.Edit
     }
 
-    /** Text shown on the toolbar button. */
+    /** Text shown on the toolbar button; a selected environment reads "Env: <name>". */
     fun buttonText(
         environments: List<Environment>,
         selected: String?,
         noEnvironments: String,
         selectPrompt: String,
+        selectedFormat: (String) -> String = { "Env: $it" },
     ): String =
         when {
             environments.isEmpty() -> noEnvironments
-            selected != null && environments.any { it.name == selected } -> selected
+            selected != null && environments.any { it.name == selected } -> selectedFormat(selected)
             else -> selectPrompt
         }
 }

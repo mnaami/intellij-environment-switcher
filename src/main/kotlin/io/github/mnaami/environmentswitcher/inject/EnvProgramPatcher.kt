@@ -14,6 +14,8 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import io.github.mnaami.environmentswitcher.EnvSwitcherBundle
+import io.github.mnaami.environmentswitcher.model.ConfirmScope
+import io.github.mnaami.environmentswitcher.model.MissingSecretPolicy
 import io.github.mnaami.environmentswitcher.resolve.Resolution
 import io.github.mnaami.environmentswitcher.resolve.VariableResolver
 import io.github.mnaami.environmentswitcher.state.EnvironmentsService
@@ -54,7 +56,17 @@ class EnvProgramPatcher : JavaProgramPatcher() {
             notify(project, EnvSwitcherBundle.message("notify.missingEnvironment", envName), NotificationType.WARNING)
             return resolution
         }
-        confirmIfRequired(project, state.environment(envName)?.confirmBeforeRun == true, envName)
+        if (resolution.missingSecrets.isNotEmpty() && state.missingSecretPolicy == MissingSecretPolicy.BLOCK) {
+            throw ExecutionException(
+                EnvSwitcherBundle.message("notify.missingSecrets.blocked", envName, resolution.missingSecrets.joinToString(", ")),
+            )
+        }
+        confirmIfRequired(
+            project,
+            state.environment(envName)?.confirmBeforeRun == true,
+            envName,
+            everyRun = state.confirmScope == ConfirmScope.EVERY_RUN,
+        )
 
         val env = javaParameters.env
         for ((key, value) in resolution.variables) {
@@ -75,10 +87,11 @@ class EnvProgramPatcher : JavaProgramPatcher() {
         project: Project,
         required: Boolean,
         envName: String,
+        everyRun: Boolean,
     ) {
         if (!required || ApplicationManager.getApplication().isUnitTestMode) return
         val sessionKey = "${project.locationHash}/$envName"
-        if (confirmedThisSession.containsKey(sessionKey)) return
+        if (!everyRun && confirmedThisSession.containsKey(sessionKey)) return
         var accepted = false
         ApplicationManager.getApplication().invokeAndWait {
             accepted =

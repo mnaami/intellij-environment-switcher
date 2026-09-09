@@ -23,6 +23,15 @@ class ModuleOverride() {
     override fun hashCode(): Int = moduleName.hashCode()
 }
 
+enum class SecretStorage { PASSWORD_SAFE, PROJECT_FILE }
+
+enum class MissingSecretPolicy { WARN, BLOCK }
+
+enum class ConfirmScope { ONCE_PER_SESSION, EVERY_RUN }
+
+/** Names that are treated as secrets when [EnvironmentsState.autoMarkSecrets] is on. */
+val SENSITIVE_NAME: Regex = Regex("(PASSWORD|PASSWD|SECRET|TOKEN|PRIVATE_KEY|API_KEY|CREDENTIAL)", RegexOption.IGNORE_CASE)
+
 /** Everything shared through the project file (.idea/environmentSwitcher.xml). Never holds secret values. */
 class EnvironmentsState {
     var version: Int = 1
@@ -40,6 +49,23 @@ class EnvironmentsState {
     /** Run configuration type ids that receive the variables. */
     @XCollection(propertyElementName = "targets", elementName = "type", valueAttributeName = "id")
     var targetConfigTypeIds: MutableList<String> = DEFAULT_TARGET_TYPES.toMutableList()
+
+    // ---- team-wide policies (Settings | Tools | Environment Switcher) ----
+
+    /** Where values marked secret live. PROJECT_FILE disables the Secret column: everything stays in this file. */
+    var secretStorage: SecretStorage = SecretStorage.PASSWORD_SAFE
+
+    /** What happens when a secret has no stored value at launch. */
+    var missingSecretPolicy: MissingSecretPolicy = MissingSecretPolicy.WARN
+
+    /** How often an environment flagged "confirm before run" asks. */
+    var confirmScope: ConfirmScope = ConfirmScope.ONCE_PER_SESSION
+
+    /** Tick Secret automatically for new variables whose name looks sensitive. */
+    var autoMarkSecrets: Boolean = true
+
+    /** Expand `${NAME}` references inside values against the resolved variables. */
+    var expandVariables: Boolean = false
 
     fun environment(name: String): Environment? = environments.firstOrNull { it.name == name }
 

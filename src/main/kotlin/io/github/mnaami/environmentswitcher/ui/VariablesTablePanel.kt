@@ -21,8 +21,20 @@ private const val COL_SECRET = 2
 
 /** Key / value (/ secret) table editing a list of [VariableRow] in place. */
 class VariablesTablePanel(
-    private val allowSecrets: Boolean,
+    allowSecrets: Boolean,
 ) {
+    /** Whether the Secret column is shown; off when the project stores everything in plain text. */
+    var allowSecrets: Boolean = allowSecrets
+        set(value) {
+            if (field == value) return
+            field = value
+            model.fireTableStructureChanged()
+            applyColumnWidths()
+        }
+
+    /** Called with a freshly typed variable name; true marks the row secret (auto-mark policy). */
+    var autoMarkSecret: (String) -> Boolean = { false }
+
     private var rows: MutableList<VariableRow> = ArrayList()
     private val model = Model()
     private val table =
@@ -68,9 +80,13 @@ class VariablesTablePanel(
         table.emptyText.text = EnvSwitcherBundle.message("table.empty")
         table.setShowGrid(false)
         table.putClientProperty("terminateEditOnFocusLost", true) // commit the cell when the user clicks OK/Apply
+        applyColumnWidths()
+    }
+
+    private fun applyColumnWidths() {
         table.columnModel.getColumn(COL_KEY).preferredWidth = 220
         table.columnModel.getColumn(COL_VALUE).preferredWidth = 420
-        if (allowSecrets) table.columnModel.getColumn(COL_SECRET).maxWidth = 70
+        if (allowSecrets && table.columnModel.columnCount > COL_SECRET) table.columnModel.getColumn(COL_SECRET).maxWidth = 70
     }
 
     fun bind(rows: MutableList<VariableRow>) {
@@ -131,7 +147,15 @@ class VariablesTablePanel(
         ) {
             val row = rows[rowIndex]
             when (columnIndex) {
-                COL_KEY -> row.key = (aValue as? String).orEmpty().trim()
+                COL_KEY -> {
+                    val newKey = (aValue as? String).orEmpty().trim()
+                    val renamed = newKey != row.key
+                    row.key = newKey
+                    if (renamed && allowSecrets && !row.secret && !row.stored && autoMarkSecret(newKey)) {
+                        row.secret = true
+                        row.value = row.value?.takeIf { it.isNotEmpty() }
+                    }
+                }
                 COL_VALUE -> row.value = (aValue as? String).orEmpty()
                 COL_SECRET -> {
                     val secret = aValue == true

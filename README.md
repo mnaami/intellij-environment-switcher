@@ -25,7 +25,8 @@ Build it yourself:
 
 ## Use
 
-1. *Settings | Tools | Environment Switcher*: add environments and their variables.
+1. *Run | Edit Environments…* (also at the bottom of the toolbar dropdown): add
+   environments and their variables.
    Tick **Secret** on a row to keep its value out of the project file.
 2. Pick an environment in the toolbar dropdown (left of the run widget).
 3. Run. The console shows the variables the process received.
@@ -37,9 +38,24 @@ environment, *Module Overrides* for the run configuration's module, secrets.
 Per environment you can choose a colour and enable **Ask for confirmation
 before running**, useful for production.
 
+### Settings
+
+*Settings | Tools | Environment Switcher* holds behaviour, not data. Team
+policies are stored in the shared project file; toolbar preferences are yours.
+
+| Setting | Default |
+|---|---|
+| Run configuration types that receive variables | Application, JAR Application, Spring Boot |
+| When a secret has no stored value: warn and run, or block the run | warn |
+| Environments marked "ask for confirmation": once per IDE session, or every run | once per session |
+| Expand `${NAME}` references in values (chained references work, unknown ones stay literal) | off |
+| Secret storage: IDE password safe, or plain text in the project file | password safe |
+| Automatically mark new `*PASSWORD*`, `*SECRET*`, `*TOKEN*`, `*KEY*` variables as secret | on |
+| Toolbar: show "Env:" prefix, show colour dot | on, on |
+
 ### Import a folder of `.env` files
 
-*Settings | Tools | Environment Switcher | Import Folder…* reads:
+*Run | Edit Environments… | Import Folder…* reads:
 
 ```
 <name>.env                  one environment per file (dev.env, prod.env, ...)

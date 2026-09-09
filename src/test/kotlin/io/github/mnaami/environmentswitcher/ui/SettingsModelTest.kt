@@ -94,7 +94,6 @@ class SettingsModelTest {
 
     @Test
     fun `import replaces environments and carries developer secrets as pending values`() {
-        state.targetConfigTypeIds = mutableListOf("Application")
         val model = SettingsModel.from(state, secrets)
 
         model.importPlan(EnvFolderImporter().scan(File("src/test/resources/env-sample")))
@@ -103,7 +102,6 @@ class SettingsModelTest {
         val dbRow = model.environments[0].rows.first { it.key == "DB_PASSWORD" }
         assertTrue(dbRow.secret)
         assertEquals("dev-pw", dbRow.value)
-        assertEquals(setOf("Application"), model.targetConfigTypeIds, "target types are untouched by import")
 
         model.applyTo(state, secrets)
         assertEquals("dev-pw", secrets.get("dev", "DB_PASSWORD"))

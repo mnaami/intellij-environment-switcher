@@ -2,9 +2,12 @@ package io.github.mnaami.environmentswitcher.state
 
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.util.xmlb.XmlSerializer
+import io.github.mnaami.environmentswitcher.model.ConfirmScope
 import io.github.mnaami.environmentswitcher.model.Environment
 import io.github.mnaami.environmentswitcher.model.EnvironmentsState
+import io.github.mnaami.environmentswitcher.model.MissingSecretPolicy
 import io.github.mnaami.environmentswitcher.model.ModuleOverride
+import io.github.mnaami.environmentswitcher.model.SecretStorage
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -24,6 +27,11 @@ class EnvironmentsStateSerializationTest {
             environments += Environment(name = "prod", variables = mapOf("PROFILE" to "prod"), confirmBeforeRun = true)
             overrides += ModuleOverride("billing-service", mapOf("PORT" to "9092"))
             targetConfigTypeIds = mutableListOf("Application")
+            secretStorage = SecretStorage.PROJECT_FILE
+            missingSecretPolicy = MissingSecretPolicy.BLOCK
+            confirmScope = ConfirmScope.EVERY_RUN
+            autoMarkSecrets = false
+            expandVariables = true
         }
 
     @Test
@@ -36,6 +44,11 @@ class EnvironmentsStateSerializationTest {
         assertEquals(original.environments, restored.environments)
         assertEquals(original.overrides, restored.overrides)
         assertEquals(original.targetConfigTypeIds, restored.targetConfigTypeIds)
+        assertEquals(SecretStorage.PROJECT_FILE, restored.secretStorage)
+        assertEquals(MissingSecretPolicy.BLOCK, restored.missingSecretPolicy)
+        assertEquals(ConfirmScope.EVERY_RUN, restored.confirmScope)
+        assertFalse(restored.autoMarkSecrets)
+        assertTrue(restored.expandVariables)
         assertTrue(restored.environment("prod")!!.confirmBeforeRun)
         assertEquals("#4C9AFF", restored.environment("dev")!!.color)
     }
