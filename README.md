@@ -13,6 +13,12 @@ safe (your OS keychain), never in project files.
 - Team-shareable: environments are stored in `.idea/environmentSwitcher.xml`; the
   selected environment and all secret values stay on your machine.
 
+![Environment dropdown in the toolbar](docs/screenshots/toolbar-dropdown.png)
+
+![Edit Environments dialog](docs/screenshots/edit-environments.png)
+
+![Settings](docs/screenshots/settings.png)
+
 ## Install
 
 From a release zip: *Settings | Plugins | ⚙ | Install Plugin from Disk…*.
@@ -93,6 +99,21 @@ which keys are secret.
 
 Requires a JDK 17 toolchain (Gradle downloads one) and network access to
 download the IntelliJ Platform.
+
+### Releasing
+
+1. Update `pluginVersion` in `gradle.properties`, the `<change-notes>` in
+   `plugin.xml` and `CHANGELOG.md`.
+2. Commit, then tag and push: `git tag -a vX.Y.Z -m "Environment Switcher X.Y.Z" && git push origin vX.Y.Z`.
+3. The `Release` workflow builds, verifies, attaches the zip to the GitHub
+   Release and, when the `PUBLISH_TOKEN` repository secret is set, uploads the
+   plugin to JetBrains Marketplace. Optional signing uses `CERTIFICATE_CHAIN`,
+   `PRIVATE_KEY` and `PRIVATE_KEY_PASSWORD`.
+
+The first Marketplace upload must be done by hand at
+https://plugins.jetbrains.com/plugin/add (the plugin id is registered then);
+later versions go through the workflow. Screenshots for the listing live in
+`docs/screenshots/`.
 
 ### Manual checklist before a release
 

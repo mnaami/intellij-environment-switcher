@@ -4,11 +4,29 @@
     <vendor email="m.naami@outlook.com" url="https://github.com/mnaami">Mohammed Nami</vendor>
 
     <description><![CDATA[
-    Postman-style environments for your run configurations.<br/>
-    Define named environments (dev, test, staging, prod, ...) with their variables once,
-    pick one from a dropdown next to the run configuration selector, and every run
-    configuration you launch gets those variables. Secrets are stored in the IDE's
-    password safe, never in project files.
+    <p>Switch the environment your run configurations target from a dropdown in the toolbar,
+    the way Postman switches environments. Define <b>dev</b>, <b>test</b>, <b>staging</b>,
+    <b>prod</b> once; every run configuration you launch receives the selected
+    environment's variables.</p>
+
+    <h3>Features</h3>
+    <ul>
+      <li>Environment dropdown next to the run widget, with a colour per environment.</li>
+      <li><b>Run | Edit Environments…</b> dialog: variables per environment, common variables,
+          per-module overrides, copy environment, import from a folder of <code>.env</code> files.</li>
+      <li>Secrets stay in the IDE password safe (your OS keychain); the shared project file
+          lists only their names. Optionally keep everything in the project file for private repos.</li>
+      <li>Works with Application, JAR Application and Spring Boot run configurations out of the box;
+          enable any Java-based type in settings.</li>
+      <li>Optional confirmation before running against an environment such as production.</li>
+      <li>Missing-secret policy (warn or block), <code>${NAME}</code> expansion, auto-marking of
+          sensitive variable names.</li>
+      <li>Team-friendly: commit <code>.idea/environmentSwitcher.xml</code>; each developer keeps
+          their own selection and secrets.</li>
+    </ul>
+
+    <p>Variables set explicitly on a run configuration always win over the environment.</p>
+    <p><a href="https://github.com/mnaami/intellij-environment-switcher">Source, issues and documentation on GitHub</a>.</p>
     ]]></description>
 
     <change-notes><![CDATA[

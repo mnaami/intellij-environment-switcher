@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <rect x="2" y="2" width="36" height="36" rx="8" fill="#3574F0"/>
+  <!-- three environment "pills", the middle one selected -->
+  <rect x="9" y="9" width="22" height="5" rx="2.5" fill="#FFFFFF" fill-opacity="0.55"/>
+  <rect x="9" y="17.5" width="22" height="5" rx="2.5" fill="#FFFFFF"/>
+  <rect x="9" y="26" width="22" height="5" rx="2.5" fill="#FFFFFF" fill-opacity="0.55"/>
+  <circle cx="12" cy="20" r="2.2" fill="#3574F0"/>
+</svg>
