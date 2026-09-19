@@ -5,7 +5,7 @@ import org.jetbrains.annotations.PropertyKey
 
 private const val BUNDLE = "messages.EnvSwitcherBundle"
 
-object EnvSwitcherBundle : DynamicBundle(BUNDLE) {
+object EnvSwitcherBundle : DynamicBundle(EnvSwitcherBundle::class.java, BUNDLE) {
     fun message(
         @PropertyKey(resourceBundle = BUNDLE) key: String,
         vararg params: Any,
