@@ -41,6 +41,7 @@ import java.io.File
 import javax.swing.DefaultListModel
 import javax.swing.JButton
 import javax.swing.JComponent
+import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ScrollPaneConstants
@@ -176,9 +177,18 @@ class EnvironmentsConfigurable(
         private val list =
             JBList(listModel).apply {
                 cellRenderer =
-                    com.intellij.ui.SimpleListCellRenderer.create { label, draft, _ ->
-                        label.text = draft.name.ifBlank { "<unnamed>" }
-                        label.icon = EnvironmentComboBoxAction.dot(draft.color)
+                    object : com.intellij.ui.SimpleListCellRenderer<EnvironmentDraft>() {
+                        override fun customize(
+                            list: JList<out EnvironmentDraft>,
+                            draft: EnvironmentDraft?,
+                            index: Int,
+                            selected: Boolean,
+                            hasFocus: Boolean,
+                        ) {
+                            if (draft == null) return
+                            text = draft.name.ifBlank { "<unnamed>" }
+                            icon = EnvironmentComboBoxAction.dot(draft.color)
+                        }
                     }
             }
         private val name = JBTextField()
@@ -362,8 +372,17 @@ class EnvironmentsConfigurable(
         private val list =
             JBList(listModel).apply {
                 cellRenderer =
-                    com.intellij.ui.SimpleListCellRenderer
-                        .create("") { it.moduleName }
+                    object : com.intellij.ui.SimpleListCellRenderer<OverrideDraft>() {
+                        override fun customize(
+                            list: JList<out OverrideDraft>,
+                            draft: OverrideDraft?,
+                            index: Int,
+                            selected: Boolean,
+                            hasFocus: Boolean,
+                        ) {
+                            text = draft?.moduleName.orEmpty()
+                        }
+                    }
             }
         private val table = VariablesTablePanel(allowSecrets = false)
         val component: JComponent

@@ -53,7 +53,8 @@ class PasswordSafeSecretStore(
     private fun attributes(
         environment: String,
         key: String,
-    ): CredentialAttributes = CredentialAttributes(generateServiceName(SUBSYSTEM, "${project.locationHash}/$environment"), key)
+    ): CredentialAttributes =
+        CredentialAttributesFactory.create(generateServiceName(SUBSYSTEM, "${project.locationHash}/$environment"), key)
 
     override fun get(
         environment: String,
