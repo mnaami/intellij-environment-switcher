@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-19
+### Fixed
+- Replaced deprecated and scheduled-for-removal platform APIs reported by
+  the JetBrains Plugin Verifier (list renderers, password-safe attributes).
+
 ## [1.0.0] - 2026-09-10
 ### Added
 - Toolbar dropdown next to the run widget to select the active environment
