@@ -36,12 +36,11 @@
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.java</depends>
+    <depends optional="true" config-file="envswitcher-java.xml">com.intellij.modules.java</depends>
 
     <resource-bundle>messages.EnvSwitcherBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <java.programPatcher implementation="io.github.mnaami.environmentswitcher.inject.EnvProgramPatcher"/>
         <notificationGroup id="Environment Switcher" displayType="BALLOON"/>
         <projectConfigurable parentId="tools" id="io.github.mnaami.environmentswitcher.settings"
                              instance="io.github.mnaami.environmentswitcher.ui.EnvSwitcherSettingsConfigurable"

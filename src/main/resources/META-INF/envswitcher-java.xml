@@ -1,0 +1,11 @@
+<idea-plugin>
+    <!--
+      Loaded only in IDEs that bundle the Java plugin (IDEA, Android Studio).
+      java.programPatcher and JavaProgramPatcher belong to that plugin, so both
+      the extension and EnvProgramPatcher must stay out of the core descriptor:
+      referencing them elsewhere would break plugin loading in PyCharm et al.
+    -->
+    <extensions defaultExtensionNs="com.intellij">
+        <java.programPatcher implementation="io.github.mnaami.environmentswitcher.inject.EnvProgramPatcher"/>
+    </extensions>
+</idea-plugin>
