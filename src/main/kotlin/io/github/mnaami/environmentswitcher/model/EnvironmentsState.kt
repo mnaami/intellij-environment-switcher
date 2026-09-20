@@ -80,6 +80,8 @@ class EnvironmentsState {
                 "JarApplication",
                 "SpringBootApplicationConfigurationType",
                 "PythonConfigurationType",
+                "NodeJSConfigurationType",
+                "js.build_tools.npm",
             )
     }
 }

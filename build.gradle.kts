@@ -25,6 +25,9 @@ dependencies {
     intellijPlatform {
         create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
         bundledPlugin("com.intellij.java")
+        // JavaScript/Node APIs ship only with Ultimate; both are optional at runtime
+        bundledPlugin("JavaScript")
+        bundledPlugin("NodeJS")
         // compile-only: language plugins are optional dependencies at runtime
         plugin(providers.gradleProperty("pythonPlugin"))
         testFramework(TestFrameworkType.Platform)
