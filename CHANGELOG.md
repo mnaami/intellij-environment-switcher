@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-20
+### Fixed
+- Replaced the deprecated single-argument `DynamicBundle` constructor,
+  reported by the Plugin Verifier against the 2026.3 EAP.
+
 ## [1.1.0] - 2026-09-19
 ### Fixed
 - Replaced deprecated and scheduled-for-removal platform APIs reported by

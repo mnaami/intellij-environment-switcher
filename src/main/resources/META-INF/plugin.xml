@@ -30,6 +30,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <b>1.1.1</b> Compatibility with 2026.3: no deprecated platform APIs.<br>
     <b>1.1.0</b> Compatibility: no deprecated or scheduled-for-removal platform APIs.<br>
     <b>1.0.0</b> Initial release.
     ]]></change-notes>
