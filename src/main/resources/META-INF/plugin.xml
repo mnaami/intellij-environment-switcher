@@ -41,6 +41,7 @@
     <depends optional="true" config-file="envswitcher-node.xml">JavaScript</depends>
     <depends optional="true" config-file="envswitcher-go.xml">org.jetbrains.plugins.go</depends>
     <depends optional="true" config-file="envswitcher-php.xml">com.jetbrains.php</depends>
+    <depends optional="true" config-file="envswitcher-ruby.xml">org.jetbrains.plugins.ruby</depends>
 
     <resource-bundle>messages.EnvSwitcherBundle</resource-bundle>
 

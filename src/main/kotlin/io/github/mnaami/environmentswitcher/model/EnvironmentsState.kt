@@ -84,6 +84,7 @@ class EnvironmentsState {
                 "js.build_tools.npm",
                 "GoApplicationRunConfiguration",
                 "PhpLocalRunConfigurationType",
+                "RubyRunConfigurationType",
             )
     }
 }

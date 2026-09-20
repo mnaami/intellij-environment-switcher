@@ -32,6 +32,7 @@ dependencies {
         plugin(providers.gradleProperty("pythonPlugin"))
         plugin(providers.gradleProperty("goPlugin"))
         plugin(providers.gradleProperty("phpPlugin"))
+        plugin(providers.gradleProperty("rubyPlugin"))
         testFramework(TestFrameworkType.Platform)
         pluginVerifier()
         zipSigner()
