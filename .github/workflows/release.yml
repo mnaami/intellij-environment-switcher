@@ -1,8 +1,9 @@
 name: Release
 
 # Publishes to JetBrains Marketplace and attaches the zip to the GitHub Release
-# when a version tag is pushed. Requires the repository secret PUBLISH_TOKEN
-# (a JetBrains Marketplace permanent token). Signing is optional: set
+# when a version tag is pushed. The repository secret PUBLISH_TOKEN
+# (a JetBrains Marketplace permanent token) is required: without it the job
+# fails rather than silently skipping the upload. Signing is optional: set
 # CERTIFICATE_CHAIN, PRIVATE_KEY and PRIVATE_KEY_PASSWORD to enable it.
 
 on:
@@ -26,6 +27,14 @@ jobs:
           java-version: 17
       - uses: gradle/actions/setup-gradle@v6
 
+      - name: Require the Marketplace publish token
+        run: |
+          [ "$HAS_PUBLISH_TOKEN" = "true" ] || {
+            echo "::error::PUBLISH_TOKEN is not set, so this tag would build but never reach the Marketplace."
+            echo "::error::Set the repository secret, then re-run this workflow."
+            exit 1
+          }
+
       - name: Check tag matches pluginVersion
         run: |
           VERSION=$(grep '^pluginVersion' gradle.properties | cut -d= -f2 | tr -d ' ')
@@ -38,7 +47,6 @@ jobs:
         run: ./gradlew buildPlugin --no-daemon
 
       - name: Publish to JetBrains Marketplace
-        if: env.HAS_PUBLISH_TOKEN == 'true'
         env:
           PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
           CERTIFICATE_CHAIN: ${{ secrets.CERTIFICATE_CHAIN }}
