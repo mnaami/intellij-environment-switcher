@@ -37,7 +37,6 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
-    <depends optional="true" config-file="envswitcher-springboot.xml">com.intellij.spring.boot</depends>
 
     <resource-bundle>messages.EnvSwitcherBundle</resource-bundle>
 
