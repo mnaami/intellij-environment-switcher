@@ -83,6 +83,7 @@ class EnvironmentsState {
                 "NodeJSConfigurationType",
                 "js.build_tools.npm",
                 "GoApplicationRunConfiguration",
+                "PhpLocalRunConfigurationType",
             )
     }
 }

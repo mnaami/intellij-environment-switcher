@@ -1,0 +1,7 @@
+<idea-plugin>
+    <!-- Loaded only where the PHP plugin is present (PhpStorm, or IDEs with it installed). -->
+    <extensions defaultExtensionNs="com.intellij">
+        <phpRunConfigurationExtension
+            implementation="io.github.mnaami.environmentswitcher.inject.PhpEnvRunConfigurationExtension"/>
+    </extensions>
+</idea-plugin>

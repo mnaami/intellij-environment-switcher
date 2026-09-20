@@ -31,6 +31,7 @@ dependencies {
         // compile-only: language plugins are optional dependencies at runtime
         plugin(providers.gradleProperty("pythonPlugin"))
         plugin(providers.gradleProperty("goPlugin"))
+        plugin(providers.gradleProperty("phpPlugin"))
         testFramework(TestFrameworkType.Platform)
         pluginVerifier()
         zipSigner()
