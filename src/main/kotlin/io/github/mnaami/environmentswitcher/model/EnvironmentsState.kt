@@ -82,6 +82,7 @@ class EnvironmentsState {
                 "PythonConfigurationType",
                 "NodeJSConfigurationType",
                 "js.build_tools.npm",
+                "GoApplicationRunConfiguration",
             )
     }
 }

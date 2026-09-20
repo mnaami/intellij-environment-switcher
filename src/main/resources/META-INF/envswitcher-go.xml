@@ -1,0 +1,7 @@
+<idea-plugin>
+    <!-- Loaded only where the Go plugin is present (GoLand, or IDEs with it installed). -->
+    <extensions defaultExtensionNs="com.goide">
+        <runConfigurationExtension
+            implementation="io.github.mnaami.environmentswitcher.inject.GoEnvRunConfigurationExtension"/>
+    </extensions>
+</idea-plugin>

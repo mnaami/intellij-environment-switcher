@@ -39,6 +39,7 @@
     <depends optional="true" config-file="envswitcher-java.xml">com.intellij.modules.java</depends>
     <depends optional="true" config-file="envswitcher-python.xml">PythonCore</depends>
     <depends optional="true" config-file="envswitcher-node.xml">JavaScript</depends>
+    <depends optional="true" config-file="envswitcher-go.xml">org.jetbrains.plugins.go</depends>
 
     <resource-bundle>messages.EnvSwitcherBundle</resource-bundle>
 

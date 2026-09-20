@@ -30,6 +30,7 @@ dependencies {
         bundledPlugin("NodeJS")
         // compile-only: language plugins are optional dependencies at runtime
         plugin(providers.gradleProperty("pythonPlugin"))
+        plugin(providers.gradleProperty("goPlugin"))
         testFramework(TestFrameworkType.Platform)
         pluginVerifier()
         zipSigner()
