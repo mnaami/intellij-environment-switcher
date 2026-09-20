@@ -79,6 +79,7 @@ class EnvironmentsState {
                 "Application",
                 "JarApplication",
                 "SpringBootApplicationConfigurationType",
+                "PythonConfigurationType",
             )
     }
 }

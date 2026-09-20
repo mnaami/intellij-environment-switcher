@@ -25,6 +25,8 @@ dependencies {
     intellijPlatform {
         create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
         bundledPlugin("com.intellij.java")
+        // compile-only: language plugins are optional dependencies at runtime
+        plugin(providers.gradleProperty("pythonPlugin"))
         testFramework(TestFrameworkType.Platform)
         pluginVerifier()
         zipSigner()
