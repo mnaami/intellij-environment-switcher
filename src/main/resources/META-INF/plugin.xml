@@ -36,13 +36,16 @@
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.java</depends>
-    <depends optional="true" config-file="envswitcher-springboot.xml">com.intellij.spring.boot</depends>
+    <depends optional="true" config-file="envswitcher-java.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="envswitcher-python.xml">PythonCore</depends>
+    <depends optional="true" config-file="envswitcher-node.xml">JavaScript</depends>
+    <depends optional="true" config-file="envswitcher-go.xml">org.jetbrains.plugins.go</depends>
+    <depends optional="true" config-file="envswitcher-php.xml">com.jetbrains.php</depends>
+    <depends optional="true" config-file="envswitcher-ruby.xml">org.jetbrains.plugins.ruby</depends>
 
     <resource-bundle>messages.EnvSwitcherBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <java.programPatcher implementation="io.github.mnaami.environmentswitcher.inject.EnvProgramPatcher"/>
         <notificationGroup id="Environment Switcher" displayType="BALLOON"/>
         <projectConfigurable parentId="tools" id="io.github.mnaami.environmentswitcher.settings"
                              instance="io.github.mnaami.environmentswitcher.ui.EnvSwitcherSettingsConfigurable"

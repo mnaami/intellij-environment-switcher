@@ -79,6 +79,12 @@ class EnvironmentsState {
                 "Application",
                 "JarApplication",
                 "SpringBootApplicationConfigurationType",
+                "PythonConfigurationType",
+                "NodeJSConfigurationType",
+                "js.build_tools.npm",
+                "GoApplicationRunConfiguration",
+                "PhpLocalRunConfigurationType",
+                "RubyRunConfigurationType",
             )
     }
 }

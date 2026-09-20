@@ -1,0 +1,7 @@
+// Java run configuration support is optional: EnvProgramPatcher is registered
+// from envswitcher-java.xml and loaded only in IDEs bundling the Java plugin.
+// In every other IDE the verifier sees the class but cannot resolve its Java
+// supertypes. The class is never loaded there, so these are expected.
+// Everything else stays strict - do not widen these patterns.
+io.github.mnaami.environmentswitcher:@PLUGIN_VERSION@:Access to unresolved class com.intellij.execution.runners.JavaProgramPatcher
+io.github.mnaami.environmentswitcher:@PLUGIN_VERSION@:Access to unresolved class com.intellij.execution.configurations.JavaParameters

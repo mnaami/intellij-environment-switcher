@@ -1,0 +1,10 @@
+<idea-plugin>
+    <!--
+      Loaded only where the JavaScript plugin is present (WebStorm, IDEA
+      Ultimate). The extension point is declared by JavaScript, not NodeJS.
+    -->
+    <extensions defaultExtensionNs="JavaScript">
+        <nodeRunConfigurationExtension
+            implementation="io.github.mnaami.environmentswitcher.inject.NodeEnvRunConfigurationExtension"/>
+    </extensions>
+</idea-plugin>
