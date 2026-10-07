@@ -34,12 +34,17 @@ Build it yourself:
 1. *Run | Edit Environments…* (also at the bottom of the toolbar dropdown): add
    environments and their variables.
    Tick **Secret** on a row to keep its value out of the project file.
+   Untick the checkbox at the start of a row to stop injecting that variable
+   without deleting it; the row stays in the list, greyed out.
 2. Pick an environment in the toolbar dropdown (left of the run widget).
 3. Run. The console shows the variables the process received.
 
 Variables set explicitly on a run configuration always win over the
 environment. Resolution order, lowest to highest: *Common Variables*, the
 environment, *Module Overrides* for the run configuration's module, secrets.
+An unticked variable is skipped at its level, so a lower level's value for the
+same name applies instead. An unticked secret keeps its stored value and is not
+reported as missing.
 
 Per environment you can choose a colour and enable **Ask for confirmation
 before running**, useful for production.
@@ -123,6 +128,8 @@ later versions go through the workflow. Screenshots for the listing live in
 - Missing secret shows a balloon and the variable is absent.
 - "Ask for confirmation" environment prompts once per IDE session.
 - Settings: add/rename/delete env, secret masking, cancel discards, import folder.
+- Unticked variable is absent from the process and stays unticked after reopening.
+- Edit Environments dialog leaves other open project windows usable.
 - `.idea/environmentSwitcher.xml` contains secret key names only.
 
 ## License
