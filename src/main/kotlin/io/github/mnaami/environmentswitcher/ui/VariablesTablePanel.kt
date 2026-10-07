@@ -69,7 +69,11 @@ class VariablesTablePanel(
                 column: Int,
             ): Component {
                 val c = super.prepareRenderer(renderer, row, column)
-                if (column != COL_ENABLED && !rows[row].enabled && !isRowSelected(row)) c.foreground = UIUtil.getLabelDisabledForeground()
+                // Renderers are shared and DefaultTableCellRenderer keeps the last foreground set,
+                // so every unselected row must set it, not only the disabled ones.
+                if (column != COL_ENABLED && !isRowSelected(row)) {
+                    c.foreground = if (rows[row].enabled) foreground else UIUtil.getLabelDisabledForeground()
+                }
                 return c
             }
         }
