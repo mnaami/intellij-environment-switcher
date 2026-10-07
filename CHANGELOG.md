@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-07
+### Fixed
+- Unticking one variable no longer greys out every row drawn after it in
+  the Edit Environments tables.
+
 ## [1.2.0] - 2026-10-07
 ### Added
 - Enabled checkbox on every variable (environments, common, overrides):
