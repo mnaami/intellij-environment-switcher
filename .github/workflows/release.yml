@@ -60,5 +60,5 @@ jobs:
         run: |
           NOTES=$(awk '/^## \['"${GITHUB_REF_NAME#v}"'\]/{f=1;next} /^## \[/{f=0} f' CHANGELOG.md)
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
-            || gh release create "$GITHUB_REF_NAME" --title "Environment Switcher ${GITHUB_REF_NAME#v}" --notes "$NOTES"
+            || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes "$NOTES"
           gh release upload "$GITHUB_REF_NAME" build/distributions/*.zip --clobber
