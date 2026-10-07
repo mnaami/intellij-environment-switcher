@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.2.1] - 2026-10-07
 ### Fixed
 - Unticking one variable no longer greys out every row drawn after it in
   the Edit Environments tables.
