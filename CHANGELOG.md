@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-07
+### Added
+- Enabled checkbox on every variable (environments, common, overrides):
+  unchecked variables stay in the list but are not injected.
+### Changed
+- The Edit Environments dialog is modal to its own project window only,
+  like Settings, so other open projects stay usable.
+
 ## [1.1.1] - 2026-09-20
 ### Fixed
 - Replaced the deprecated single-argument `DynamicBundle` constructor,

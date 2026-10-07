@@ -13,6 +13,8 @@ data class VariableRow(
     var secret: Boolean = false,
     /** A value already exists in the secret store (informational, drives the "stored" rendering). */
     var stored: Boolean = false,
+    /** Unchecked rows stay in the list but are not injected. */
+    var enabled: Boolean = true,
 )
 
 data class EnvironmentDraft(
@@ -78,7 +80,9 @@ data class SettingsModel(
         secrets: SecretStore,
     ) {
         state.commonVariables = plainMap(common)
-        state.overrides = overrides.map { ModuleOverride(it.moduleName.trim(), plainMap(it.rows)) }.toMutableList()
+        state.disabledCommonKeys = disabledKeys(common)
+        state.overrides =
+            overrides.map { ModuleOverride(it.moduleName.trim(), plainMap(it.rows), disabledKeys(it.rows)) }.toMutableList()
 
         val previousSecretKeys = state.environments.associate { it.name to it.secretKeys.toSet() }
         state.environments =
@@ -103,6 +107,7 @@ data class SettingsModel(
                         secretKeys = secretRows.map { it.key.trim() },
                         color = draft.color,
                         confirmBeforeRun = draft.confirmBeforeRun,
+                        disabledKeys = disabledKeys(draft.rows),
                     )
                 }.toMutableList()
     }
@@ -133,18 +138,28 @@ data class SettingsModel(
             secrets: SecretStore,
         ): SettingsModel {
             val model = SettingsModel()
-            model.common += state.commonVariables.map { (k, v) -> VariableRow(k, v) }
+            val commonDisabled = state.disabledCommonKeys.toSet()
+            model.common += state.commonVariables.map { (k, v) -> VariableRow(k, v, enabled = k !in commonDisabled) }
             for (env in state.environments) {
+                val disabled = env.disabledKeys.toSet()
                 val draft = EnvironmentDraft(env.name, env.color, env.confirmBeforeRun)
-                draft.rows += env.variables.map { (k, v) -> VariableRow(k, v) }
+                draft.rows += env.variables.map { (k, v) -> VariableRow(k, v, enabled = k !in disabled) }
                 draft.rows +=
-                    env.secretKeys.map { key -> VariableRow(key, null, secret = true, stored = secrets.get(env.name, key) != null) }
+                    env.secretKeys.map { key ->
+                        VariableRow(key, null, secret = true, stored = secrets.get(env.name, key) != null, enabled = key !in disabled)
+                    }
                 model.environments += draft
             }
             model.overrides +=
-                state.overrides.map { o -> OverrideDraft(o.moduleName, o.variables.map { (k, v) -> VariableRow(k, v) }.toMutableList()) }
+                state.overrides.map { o ->
+                    val disabled = o.disabledKeys.toSet()
+                    OverrideDraft(o.moduleName, o.variables.map { (k, v) -> VariableRow(k, v, enabled = k !in disabled) }.toMutableList())
+                }
             return model
         }
+
+        private fun disabledKeys(rows: List<VariableRow>): MutableList<String> =
+            rows.filterNot { it.enabled }.mapTo(ArrayList()) { it.key.trim() }
 
         private fun plainMap(rows: List<VariableRow>): LinkedHashMap<String, String> =
             rows.filterNot { it.secret }.associateTo(LinkedHashMap()) { it.key.trim() to (it.value ?: "") }

@@ -16,7 +16,7 @@ data class Resolution(
 
 /**
  * Precedence, lowest to highest: common variables, environment variables,
- * module override, secrets from the store. Variables already set on the run
+ * module override, secrets from the store. Disabled variables are skipped at every level. Variables already set on the run
  * configuration are handled by the caller and always win.
  * With [EnvironmentsState.expandVariables] on, `${NAME}` references are expanded
  * against the merged map after precedence is applied.
@@ -30,11 +30,11 @@ class VariableResolver(
         moduleName: String?,
     ): Resolution {
         val env = state.environment(environmentName) ?: return Resolution.empty(missingEnvironment = environmentName)
-        val merged = LinkedHashMap(state.commonVariables)
-        merged.putAll(env.variables)
+        val merged = LinkedHashMap(state.commonVariables - state.disabledCommonKeys.toSet())
+        merged.putAll(env.variables - env.disabledKeys.toSet())
         merged.putAll(state.overridesFor(moduleName))
         val missing = ArrayList<String>()
-        for (key in env.secretKeys) {
+        for (key in env.secretKeys - env.disabledKeys.toSet()) {
             val value = secrets.get(environmentName, key)
             if (value != null) merged[key] = value else missing += key
         }

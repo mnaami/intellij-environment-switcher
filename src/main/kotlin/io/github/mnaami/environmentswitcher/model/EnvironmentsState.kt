@@ -8,9 +8,10 @@ import com.intellij.util.xmlb.annotations.XCollection
 /** Variables applied only to run configurations of one module (e.g. a different PORT per service). */
 @Tag("override")
 class ModuleOverride() {
-    constructor(moduleName: String, variables: Map<String, String>) : this() {
+    constructor(moduleName: String, variables: Map<String, String>, disabledKeys: Collection<String> = emptyList()) : this() {
         this.moduleName = moduleName
         this.variables = LinkedHashMap(variables)
+        this.disabledKeys = disabledKeys.toMutableList()
     }
 
     var moduleName: String = ""
@@ -18,7 +19,12 @@ class ModuleOverride() {
     @MapAnnotation(surroundWithTag = false, entryTagName = "var", keyAttributeName = "name", valueAttributeName = "value")
     var variables: MutableMap<String, String> = LinkedHashMap()
 
-    override fun equals(other: Any?): Boolean = other is ModuleOverride && other.moduleName == moduleName && other.variables == variables
+    /** Variables kept in the list but not injected. */
+    @XCollection(propertyElementName = "disabled", elementName = "var", valueAttributeName = "name")
+    var disabledKeys: MutableList<String> = ArrayList()
+
+    override fun equals(other: Any?): Boolean =
+        other is ModuleOverride && other.moduleName == moduleName && other.variables == variables && other.disabledKeys == disabledKeys
 
     override fun hashCode(): Int = moduleName.hashCode()
 }
@@ -39,6 +45,10 @@ class EnvironmentsState {
     @Property(surroundWithTag = true)
     @MapAnnotation(surroundWithTag = false, entryTagName = "var", keyAttributeName = "name", valueAttributeName = "value")
     var commonVariables: MutableMap<String, String> = LinkedHashMap()
+
+    /** Common variables kept in the list but not injected. */
+    @XCollection(propertyElementName = "disabledCommon", elementName = "var", valueAttributeName = "name")
+    var disabledCommonKeys: MutableList<String> = ArrayList()
 
     @XCollection(propertyElementName = "environments")
     var environments: MutableList<Environment> = ArrayList()
@@ -70,7 +80,10 @@ class EnvironmentsState {
     fun environment(name: String): Environment? = environments.firstOrNull { it.name == name }
 
     fun overridesFor(moduleName: String?): Map<String, String> =
-        moduleName?.let { m -> overrides.firstOrNull { it.moduleName == m }?.variables }.orEmpty()
+        moduleName
+            ?.let { m -> overrides.firstOrNull { it.moduleName == m } }
+            ?.let { o -> o.variables - o.disabledKeys.toSet() }
+            .orEmpty()
 
     companion object {
         /** Ids of the run configuration types enabled out of the box. Plain strings: no plugin dependency. */

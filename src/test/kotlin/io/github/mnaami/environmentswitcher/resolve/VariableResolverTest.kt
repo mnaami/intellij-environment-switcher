@@ -48,6 +48,21 @@ class VariableResolverTest {
     }
 
     @Test
+    fun `disabled variables are skipped so the lower level value shows through`() {
+        state.environment("dev")!!.disabledKeys += listOf("PORT", "TOKEN")
+        state.disabledCommonKeys += "HOST"
+        state.overrides[0].disabledKeys += "PORT"
+        secrets.set("dev", "DB_PASSWORD", "s3cr3t")
+
+        val result = resolver.resolve("dev", "billing")
+
+        assertEquals("8080", result.variables["PORT"])
+        assertFalse(result.variables.containsKey("HOST"))
+        assertFalse(result.variables.containsKey("TOKEN"))
+        assertTrue(result.missingSecrets.isEmpty(), "a disabled secret is not reported missing")
+    }
+
+    @Test
     fun `secrets are scoped per environment`() {
         secrets.set("prod", "DB_PASSWORD", "prod-pw")
         assertTrue(resolver.resolve("dev", null).missingSecrets.contains("DB_PASSWORD"))

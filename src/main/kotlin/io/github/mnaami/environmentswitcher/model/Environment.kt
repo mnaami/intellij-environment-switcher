@@ -16,12 +16,14 @@ class Environment() {
         secretKeys: Collection<String> = emptyList(),
         color: String = DEFAULT_COLOR,
         confirmBeforeRun: Boolean = false,
+        disabledKeys: Collection<String> = emptyList(),
     ) : this() {
         this.name = name
         this.variables = LinkedHashMap(variables)
         this.secretKeys = secretKeys.toMutableList()
         this.color = color
         this.confirmBeforeRun = confirmBeforeRun
+        this.disabledKeys = disabledKeys.toMutableList()
     }
 
     var name: String = ""
@@ -38,13 +40,18 @@ class Environment() {
     @XCollection(propertyElementName = "secrets", elementName = "secret", valueAttributeName = "name")
     var secretKeys: MutableList<String> = ArrayList()
 
+    /** Variables (plain or secret) kept in the list but not injected. */
+    @XCollection(propertyElementName = "disabled", elementName = "var", valueAttributeName = "name")
+    var disabledKeys: MutableList<String> = ArrayList()
+
     override fun equals(other: Any?): Boolean =
         other is Environment &&
             other.name == name &&
             other.color == color &&
             other.confirmBeforeRun == confirmBeforeRun &&
             other.variables == variables &&
-            other.secretKeys == secretKeys
+            other.secretKeys == secretKeys &&
+            other.disabledKeys == disabledKeys
 
     override fun hashCode(): Int = name.hashCode()
 

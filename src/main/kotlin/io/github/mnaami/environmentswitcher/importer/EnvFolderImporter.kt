@@ -72,6 +72,7 @@ class EnvFolderImporter {
         secrets: SecretStore,
     ) {
         state.commonVariables = LinkedHashMap(plan.common)
+        state.disabledCommonKeys = ArrayList()
         state.environments = plan.environments.toMutableList()
         state.overrides = plan.overrides.toMutableList()
         for ((env, values) in plan.secrets) {

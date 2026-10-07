@@ -359,7 +359,7 @@ class EnvironmentsConfigurable(
                             row.stored -> secrets.get(source.name.trim(), row.key.trim())
                             else -> null
                         }
-                    VariableRow(row.key, pending, row.secret, stored = false)
+                    VariableRow(row.key, pending, row.secret, stored = false, enabled = row.enabled)
                 }
             return EnvironmentDraft(candidate, source.color, source.confirmBeforeRun, rows.toMutableList())
         }
