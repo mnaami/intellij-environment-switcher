@@ -4,6 +4,8 @@ import com.intellij.ui.BooleanTableCellEditor
 import com.intellij.ui.BooleanTableCellRenderer
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.table.JBTable
+import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.UIUtil
 import io.github.mnaami.environmentswitcher.EnvSwitcherBundle
 import java.awt.Component
 import javax.swing.DefaultCellEditor
@@ -15,11 +17,12 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.TableCellEditor
 import javax.swing.table.TableCellRenderer
 
-private const val COL_KEY = 0
-private const val COL_VALUE = 1
-private const val COL_SECRET = 2
+private const val COL_ENABLED = 0
+private const val COL_KEY = 1
+private const val COL_VALUE = 2
+private const val COL_SECRET = 3
 
-/** Key / value (/ secret) table editing a list of [VariableRow] in place. */
+/** Enabled / key / value (/ secret) table editing a list of [VariableRow] in place. */
 class VariablesTablePanel(
     allowSecrets: Boolean,
 ) {
@@ -44,7 +47,7 @@ class VariablesTablePanel(
                 column: Int,
             ): TableCellRenderer =
                 when {
-                    column == COL_SECRET -> BooleanTableCellRenderer()
+                    column == COL_ENABLED || column == COL_SECRET -> BooleanTableCellRenderer()
                     column == COL_VALUE && rows[row].secret -> SecretRenderer
                     else -> super.getCellRenderer(row, column)
                 }
@@ -54,10 +57,21 @@ class VariablesTablePanel(
                 column: Int,
             ): TableCellEditor =
                 when {
-                    column == COL_SECRET -> BooleanTableCellEditor()
+                    column == COL_ENABLED || column == COL_SECRET -> BooleanTableCellEditor()
                     column == COL_VALUE && rows[row].secret -> DefaultCellEditor(JPasswordField())
                     else -> super.getCellEditor(row, column)
                 }
+
+            /** Unchecked rows are greyed out, like disabled entries elsewhere in the IDE. */
+            override fun prepareRenderer(
+                renderer: TableCellRenderer,
+                row: Int,
+                column: Int,
+            ): Component {
+                val c = super.prepareRenderer(renderer, row, column)
+                if (column != COL_ENABLED && !rows[row].enabled && !isRowSelected(row)) c.foreground = UIUtil.getLabelDisabledForeground()
+                return c
+            }
         }
 
     val component: JComponent =
@@ -84,6 +98,10 @@ class VariablesTablePanel(
     }
 
     private fun applyColumnWidths() {
+        table.columnModel.getColumn(COL_ENABLED).apply {
+            maxWidth = JBUI.scale(30)
+            minWidth = maxWidth
+        }
         table.columnModel.getColumn(COL_KEY).preferredWidth = 220
         table.columnModel.getColumn(COL_VALUE).preferredWidth = 420
         if (allowSecrets && table.columnModel.columnCount > COL_SECRET) table.columnModel.getColumn(COL_SECRET).maxWidth = 70
@@ -105,19 +123,18 @@ class VariablesTablePanel(
     private inner class Model : AbstractTableModel() {
         override fun getRowCount(): Int = rows.size
 
-        override fun getColumnCount(): Int = if (allowSecrets) 3 else 2
+        override fun getColumnCount(): Int = if (allowSecrets) 4 else 3
 
         override fun getColumnName(column: Int): String =
             when (column) {
+                COL_ENABLED -> ""
                 COL_KEY -> EnvSwitcherBundle.message("table.column.name")
                 COL_VALUE -> EnvSwitcherBundle.message("table.column.value")
                 else -> EnvSwitcherBundle.message("table.column.secret")
             }
 
         override fun getColumnClass(columnIndex: Int): Class<*> =
-            if (columnIndex ==
-                COL_SECRET
-            ) {
+            if (columnIndex == COL_ENABLED || columnIndex == COL_SECRET) {
                 java.lang.Boolean::class.java
             } else {
                 String::class.java
@@ -134,6 +151,7 @@ class VariablesTablePanel(
         ): Any? {
             val row = rows[rowIndex]
             return when (columnIndex) {
+                COL_ENABLED -> row.enabled
                 COL_KEY -> row.key
                 COL_VALUE -> if (row.secret) SecretDisplay(row) else row.value
                 else -> row.secret
@@ -147,6 +165,7 @@ class VariablesTablePanel(
         ) {
             val row = rows[rowIndex]
             when (columnIndex) {
+                COL_ENABLED -> row.enabled = aValue == true
                 COL_KEY -> {
                     val newKey = (aValue as? String).orEmpty().trim()
                     val renamed = newKey != row.key

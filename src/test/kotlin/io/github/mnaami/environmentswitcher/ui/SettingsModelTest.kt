@@ -56,6 +56,27 @@ class SettingsModelTest {
     }
 
     @Test
+    fun `unchecked rows are kept but recorded as disabled and reload unchecked`() {
+        secrets.set("dev", "TOKEN", "t")
+        val model = SettingsModel.from(state, secrets)
+        model.environments[0].rows.first { it.key == "PROFILE" }.enabled = false
+        model.environments[0].rows.first { it.key == "TOKEN" }.enabled = false
+        model.common.first { it.key == "HOST" }.enabled = false
+
+        model.applyTo(state, secrets)
+
+        val dev = state.environment("dev")!!
+        assertEquals("dev", dev.variables["PROFILE"])
+        assertEquals(listOf("PROFILE", "TOKEN"), dev.disabledKeys)
+        assertEquals("t", secrets.get("dev", "TOKEN"), "disabling a secret keeps its value")
+        assertEquals(listOf("HOST"), state.disabledCommonKeys)
+        val reloaded = SettingsModel.from(state, secrets)
+        assertFalse(reloaded.environments[0].rows.first { it.key == "TOKEN" }.enabled)
+        assertTrue(reloaded.environments[0].rows.first { it.key == "DB_PASSWORD" }.enabled)
+        assertFalse(reloaded.common.first { it.key == "HOST" }.enabled)
+    }
+
+    @Test
     fun `unchanged secrets keep their stored value and removed secrets are forgotten`() {
         secrets.set("dev", "DB_PASSWORD", "pw")
         secrets.set("dev", "TOKEN", "t")

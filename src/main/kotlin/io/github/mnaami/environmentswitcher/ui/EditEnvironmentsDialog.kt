@@ -3,6 +3,7 @@ package io.github.mnaami.environmentswitcher.ui
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.DialogWrapper.IdeModalityType
 import com.intellij.openapi.ui.Messages
 import io.github.mnaami.environmentswitcher.EnvSwitcherBundle
 import java.awt.Dimension
@@ -11,10 +12,13 @@ import javax.swing.AbstractAction
 import javax.swing.Action
 import javax.swing.JComponent
 
-/** "Edit Environments…" dialog, the environment counterpart of Run | Edit Configurations…. */
+/**
+ * "Edit Environments…" dialog, the environment counterpart of Run | Edit Configurations….
+ * Modal to its own project window only (like Settings), so other open projects stay usable.
+ */
 class EditEnvironmentsDialog(
     private val project: Project,
-) : DialogWrapper(project, true) {
+) : DialogWrapper(project, true, IdeModalityType.PROJECT) {
     private val configurable = EnvironmentsConfigurable(project)
     private val content: JComponent = configurable.createComponent()
 
