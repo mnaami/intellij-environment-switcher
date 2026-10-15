@@ -1,0 +1,11 @@
+<idea-plugin>
+    <!--
+      Loaded only where the Python plugin is present. The extension point keeps
+      the "Pythonid" prefix in both editions, so this one registration serves
+      PyCharm Community (PythonCore) and Professional (Pythonid) alike.
+    -->
+    <extensions defaultExtensionNs="Pythonid">
+        <runConfigurationExtension
+            implementation="io.github.mnaami.environmentswitcher.inject.PyEnvRunConfigurationExtension"/>
+    </extensions>
+</idea-plugin>

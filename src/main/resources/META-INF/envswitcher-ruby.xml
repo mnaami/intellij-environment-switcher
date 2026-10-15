@@ -1,0 +1,7 @@
+<idea-plugin>
+    <!-- Loaded only where the Ruby plugin is present (RubyMine, or IDEs with it installed). -->
+    <extensions defaultExtensionNs="org.jetbrains.plugins.ruby">
+        <runConfigurationExtension
+            implementation="io.github.mnaami.environmentswitcher.inject.RubyEnvRunConfigurationExtension"/>
+    </extensions>
+</idea-plugin>
