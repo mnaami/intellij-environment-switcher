@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-11-13
+### Fixed
+- Replaced the deprecated `DialogWrapper.IdeModalityType.PROJECT` in the
+  Edit Environments dialog, reported by the Plugin Verifier against
+  IntelliJ IDEA 2025.2 to 2026.3. The platform logged an error each time
+  the dialog opened with it.
+### Changed
+- The Edit Environments dialog uses the IDE's standard modality again, so
+  it blocks other project windows while open, like other IDE dialogs.
+
 ## [1.2.1] - 2026-10-07
 ### Fixed
 - Unticking one variable no longer greys out every row drawn after it in
